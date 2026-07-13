@@ -1,137 +1,141 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Ôn tập trắc nghiệm</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CYBER HUB - Classic Mode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #040c16; --c: #00f3ff; --g: #00ff88; --r: #ff3860; --p: #b026ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #f0f2f5;
-        margin: 0;
-        padding: 0;
+      font-family: 'Space Mono', monospace; background: var(--bg);
+      color: #e2eaf5; padding-bottom: 80px; /* Space for bottom bar */
+      overflow-x: hidden;
     }
-
-    .container {
-        width: 100%;
-        max-width: 800px;
-        margin: 30px auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    #homeView {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-    }
-
-    .exam-btn {
-        width: 80%;
-        padding: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .exam-btn:hover { background-color: #0056b3; }
-
-    .header {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        color: #d9534f;
-    }
-
-    .nav-top { margin-bottom: 15px; }
-
-    .nav-top button, .mode button {
-        padding: 10px 15px;
-        margin: 5px;
-        font-size: 15px;
-        border: 1px solid #ccc;
-        background: #f8f9fa;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: 0.2s;
-    }
-
-    .nav-top button:hover, .mode button:hover { background: #e2e6ea; }
-
-    .btn-answer {
-        background-color: #28a745 !important;
-        color: white;
-        font-weight: bold;
-        border: none !important;
-    }
-
-    .btn-answer:hover { background-color: #218838 !important; }
-
-    .btn-home {
-        background-color: #6c757d !important;
-        color: white;
-        border: none !important;
-    }
-
-    img {
-        max-width: 100%;
-        max-height: 70vh;
-        margin: 15px 0;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
+    
+    .orbitron { font-family: 'Orbitron', sans-serif; }
+    
+    /* UTILS */
     .hidden { display: none !important; }
-    #loadingMsg { color: #007bff; font-weight: bold; margin-top: 20px; font-size: 18px; }
-</style>
+    .text-center { text-align: center; }
+    .neon-text { text-shadow: 0 0 10px currentColor; }
+    
+    /* BUTTONS */
+    .btn {
+      padding: 12px 20px; font-family: 'Orbitron', sans-serif; font-size: 14px;
+      font-weight: bold; cursor: pointer; border-radius: 8px; border: none;
+      transition: all 0.2s; outline: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-c { background: rgba(0,243,255,0.1); border: 1px solid var(--c); color: var(--c); }
+    .btn-g { background: rgba(0,255,136,0.1); border: 1px solid var(--g); color: var(--g); }
+    .btn-p { background: rgba(176,38,255,0.1); border: 1px solid var(--p); color: var(--p); }
+    .btn:hover { background: rgba(255,255,255,0.1); box-shadow: 0 0 15px currentColor; }
+    
+    /* CONTAINER */
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    
+    /* HOME VIEW */
+    .header-title { font-size: 28px; color: var(--c); margin-bottom: 30px; text-align: center; letter-spacing: 2px; }
+    .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+    .exam-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s;
+      text-align: center;
+    }
+    .exam-card:hover { border-color: var(--c); box-shadow: 0 0 20px rgba(0,243,255,0.2); transform: translateY(-3px); }
+    .exam-card h3 { font-size: 18px; margin-bottom: 5px; color: var(--c); }
+    
+    /* QUIZ VIEW */
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+    }
+    .status-badge {
+      background: rgba(0,255,136,0.1); color: var(--g); border: 1px solid var(--g);
+      padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;
+    }
+    
+    .img-wrap { margin-bottom: 20px; text-align: center; }
+    .img-wrap img {
+      max-width: 100%; max-height: 60vh; border-radius: 12px;
+      border: 1px solid rgba(0,243,255,0.3); object-fit: contain; cursor: zoom-in;
+      image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;
+    }
+    
+    /* BOTTOM NAVIGATION BAR */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(4,12,22,0.9); backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.1); padding: 15px;
+      display: flex; justify-content: space-between; gap: 10px; z-index: 100;
+    }
+    .bottom-bar .btn { flex: 1; padding: 15px 10px; font-size: 13px; }
+    .btn-toggle { flex: 2 !important; background: rgba(176,38,255,0.15) !important; font-size: 15px !important; }
+    
+    /* LIGHTBOX */
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0,0,0,0.95); backdrop-filter: blur(5px);
+      align-items: center; justify-content: center; cursor: zoom-out;
+    }
+    #lightbox img {
+      max-width: 98vw; max-height: 98vh; object-fit: contain;
+      image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;
+    }
+    
+    /* LOADING OVERLAY */
+    #loadingOverlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+      z-index: 1000; display: none; align-items: center; justify-content: center; flex-direction: column;
+    }
+    .spinner {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 4px solid rgba(0,243,255,0.2); border-top-color: var(--c);
+      animation: spin 1s linear infinite; margin-bottom: 20px;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="container" id="homeView">
+  <h1 class="orbitron header-title neon-text">CYBER HUB // CLASSIC</h1>
+  <div id="examList" class="exam-grid"></div>
+</div>
 
-    <div id="homeView">
-        <h1>📚 Chọn folder đề</h1>
-        <div id="examList"></div>
-        <div id="loadingMsg" class="hidden">⏳ Đang quét số lượng câu hỏi... Vui lòng đợi!</div>
-    </div>
+<div class="container hidden" id="quizView">
+  <div class="top-bar">
+    <button class="btn btn-c" onclick="goHome()">← QUAY LẠI</button>
+    <span class="status-badge orbitron" id="info">Đang tải...</span>
+    <button class="btn btn-g" id="randomBtn" onclick="toggleRandom()">🔀 RANDOM: OFF</button>
+  </div>
+  
+  <div class="img-wrap">
+    <img id="questionImg" src="" onclick="openLightbox(this.src)">
+  </div>
+  <div class="img-wrap hidden" id="answerWrap">
+    <img id="answerImg" src="" style="border-color: var(--p);" onclick="openLightbox(this.src)">
+  </div>
+</div>
 
-    <div id="quizView" class="hidden">
-        <div class="nav-top">
-            <button class="btn-home" onclick="goHome()">🏠 Quay lại</button>
-            <button onclick="prev()">⬅ Trước</button>
-            <button onclick="next()">Tiếp ➡</button>
-        </div>
+<div class="bottom-bar hidden" id="bottomNav">
+  <button class="btn btn-c" onclick="prev()">⬅ TRƯỚC</button>
+  <button class="btn btn-p btn-toggle" onclick="toggleAnswer()">👀 ĐÁP ÁN</button>
+  <button class="btn btn-c" onclick="next()">TIẾP ➡</button>
+</div>
 
-        <div class="header" id="info">Đang tải dữ liệu...</div>
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="this.style.display='none'">
+  <img id="lightboxImg" src="">
+</div>
 
-        <img id="questionImg" src="" class="hidden">
-        <img id="answerImg" src="" class="hidden">
-
-        <div>
-            <button class="btn-answer" onclick="toggleAnswer()">Hiện/Ẩn đáp án (Space/Enter)</button>
-        </div>
-
-        <div class="mode">
-            <button onclick="startFull()">Ôn toàn bộ</button>
-            <button onclick="startRandom()">Random 50 câu</button>
-        </div>
-    </div>
-
+<!-- LOADING -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="orbitron" style="color: var(--c); font-size: 18px; letter-spacing: 2px;">ĐANG QUÉT ĐỀ THI...</div>
 </div>
 
 <script src="data.js"></script>
@@ -140,158 +144,168 @@
 let currentExam = null;
 let questions = [];
 let index = 0;
-let totalQuestions = 0; 
+let totalQuestions = 0;
+let isRandom = false;
 
 function initHome() {
-    const listDiv = document.getElementById("examList");
-    listDiv.innerHTML = "";
-    
-    // Nếu chưa có file data.js hoặc mảng bị lỗi
-    if (typeof EXAM_LIST === 'undefined' || EXAM_LIST.length === 0) {
-        listDiv.innerHTML = "<p style='color:red;'>Chưa tìm thấy đề nào! Bạn đã chạy file <b>quet_de.py</b> chưa?</p>";
-        return;
-    }
+  const listDiv = document.getElementById("examList");
+  listDiv.innerHTML = "";
+  
+  if (typeof EXAM_LIST === 'undefined' || EXAM_LIST.length === 0) {
+    listDiv.innerHTML = "<p style='color:var(--r); grid-column: 1/-1; text-align: center;'>Chưa tìm thấy đề nào! Bạn đã chạy file <b>main.exe</b> chưa?</p>";
+    return;
+  }
 
-    EXAM_LIST.forEach(exam => {
-        let btn = document.createElement("button");
-        btn.className = "exam-btn";
-        btn.innerText = exam.name;
-        btn.onclick = () => selectExam(exam);
-        listDiv.appendChild(btn);
-    });
+  EXAM_LIST.forEach(exam => {
+    let card = document.createElement("div");
+    card.className = "exam-card";
+    card.innerHTML = `<h3 class="orbitron">${exam.name}</h3><p style="opacity: 0.5; font-size: 12px; margin-top: 5px;">Click để bắt đầu</p>`;
+    card.onclick = () => selectExam(exam);
+    listDiv.appendChild(card);
+  });
 }
 
 function goHome() {
-    document.getElementById("quizView").classList.add("hidden");
-    document.getElementById("homeView").classList.remove("hidden");
-    currentExam = null;
-    questions = [];
+  document.getElementById("quizView").classList.add("hidden");
+  document.getElementById("bottomNav").classList.add("hidden");
+  document.getElementById("homeView").classList.remove("hidden");
+  currentExam = null;
+  questions = [];
 }
 
 async function selectExam(exam) {
-    currentExam = exam;
-    
-    document.getElementById("examList").classList.add("hidden");
-    document.getElementById("loadingMsg").classList.remove("hidden");
+  currentExam = exam;
+  document.getElementById("loadingOverlay").style.display = "flex";
 
-    totalQuestions = await autoDetectQuestionCount(exam.folderDe);
+  totalQuestions = await autoDetectQuestionCount(exam);
 
-    document.getElementById("loadingMsg").classList.add("hidden");
-    document.getElementById("examList").classList.remove("hidden");
-    
-    document.getElementById("homeView").classList.add("hidden");
-    document.getElementById("quizView").classList.remove("hidden");
+  document.getElementById("loadingOverlay").style.display = "none";
 
-    startFull(); 
+  if(totalQuestions === 0) {
+    alert("Không tìm thấy ảnh trong thư mục đề này!");
+    return;
+  }
+
+  document.getElementById("homeView").classList.add("hidden");
+  document.getElementById("quizView").classList.remove("hidden");
+  document.getElementById("bottomNav").classList.remove("hidden");
+
+  isRandom = false;
+  document.getElementById('randomBtn').innerText = '🔀 RANDOM: OFF';
+  startFull();
 }
 
-async function autoDetectQuestionCount(folderDe) {
-    let count = 0;
-    let found = true;
-
-    while (found) {
-        let nextIndex = count + 1;
-        let url = `${folderDe}/${nextIndex}.jpg`;
-        
-        let exists = await checkImageExists(url);
-        if (exists) {
-            count++;
-        } else {
-            found = false; 
-        }
-    }
-    return count;
-}
-
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        let img = new Image();
+async function autoDetectQuestionCount(exam) {
+  let low = 1, high = 300, maxFound = 0;
+  const isLocal = location.protocol === 'file:';
+  
+  async function checkExists(i) {
+    if (isLocal) {
+      return new Promise(resolve => {
+        const img = new Image();
         img.onload = () => resolve(true);
         img.onerror = () => resolve(false);
-        img.src = url;
-    });
-}
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        img.src = `${exam.folderDe}/${i}.jpg`;
+      });
+    } else {
+      try {
+        const res = await fetch(`${exam.folderDe}/${i}.jpg`, { method: 'HEAD' });
+        return res.ok;
+      } catch(e) { return false; }
     }
+  }
+
+  while (low <= high) {
+    let mid = Math.floor((low + high) / 2);
+    if (await checkExists(mid)) {
+      maxFound = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return maxFound;
 }
 
 function startFull() {
-    if (totalQuestions === 0) {
-        alert(`Không tìm thấy ảnh nào trong folder "${currentExam.folderDe}"!`);
-        return;
-    }
-    questions = [];
-    for (let i = 1; i <= totalQuestions; i++) {
-        questions.push(i);
-    }
-    index = 0;
-    loadQuestion();
+  questions = [];
+  for (let i = 1; i <= totalQuestions; i++) questions.push(i);
+  index = 0;
+  loadQuestion();
 }
 
-function startRandom() {
-    if (totalQuestions === 0) return;
+function toggleRandom() {
+  isRandom = !isRandom;
+  document.getElementById('randomBtn').innerText = '🔀 RANDOM: ' + (isRandom ? 'ON' : 'OFF');
+  if (isRandom) {
+    questions.sort(() => Math.random() - 0.5);
+    questions = questions.slice(0, Math.min(50, totalQuestions)); // Limit to 50 in random mode
+  } else {
     questions = [];
-    for (let i = 1; i <= totalQuestions; i++) {
-        questions.push(i);
-    }
-    shuffle(questions);
-    questions = questions.slice(0, Math.min(50, totalQuestions));
-    index = 0;
-    loadQuestion();
+    for (let i = 1; i <= totalQuestions; i++) questions.push(i);
+  }
+  index = 0;
+  loadQuestion();
 }
 
 function loadQuestion() {
-    if (questions.length === 0 || !currentExam) return;
-    
-    let q = questions[index];
-    let qImg = document.getElementById("questionImg");
-    let aImg = document.getElementById("answerImg");
+  if (questions.length === 0 || !currentExam) return;
+  
+  let q = questions[index];
+  let qImg = document.getElementById("questionImg");
+  let aImg = document.getElementById("answerImg");
 
-    qImg.src = `${currentExam.folderDe}/${q}.jpg`;
-    aImg.src = `${currentExam.folderDapan}/dapan${q}.jpg`;
+  qImg.src = `${currentExam.folderDe}/${q}.jpg`;
+  aImg.src = `${currentExam.folderDapan}/dapan${q}.jpg`;
 
-    qImg.classList.remove("hidden");
-    aImg.classList.add("hidden");
+  document.getElementById("answerWrap").classList.add("hidden");
 
-    document.getElementById("info").innerText = 
-        `Câu ${index + 1} / ${questions.length}  |  Câu gốc: ${q}`;
+  document.getElementById("info").innerText = `CÂU ${index + 1} / ${questions.length} (Gốc: ${q})`;
 }
 
 function next() {
-    if (index < questions.length - 1) {
-        index++;
-        loadQuestion();
-    }
+  if (index < questions.length - 1) {
+    index++;
+    loadQuestion();
+  }
 }
 
 function prev() {
-    if (index > 0) {
-        index--;
-        loadQuestion();
-    }
+  if (index > 0) {
+    index--;
+    loadQuestion();
+  }
 }
 
 function toggleAnswer() {
-    let aImg = document.getElementById("answerImg");
-    aImg.classList.toggle("hidden");
+  document.getElementById("answerWrap").classList.toggle("hidden");
+  // Cuộn xuống một chút nếu đáp án bị che
+  if(!document.getElementById("answerWrap").classList.contains("hidden")) {
+    setTimeout(() => { window.scrollBy({ top: 200, behavior: 'smooth' }); }, 100);
+  }
+}
+
+function openLightbox(src) {
+  if (!src) return;
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').style.display = 'flex';
 }
 
 document.addEventListener("keydown", function(e) {
-    if (!document.getElementById("quizView").classList.contains("hidden")) {
-        if (e.key === "ArrowRight") next();
-        if (e.key === "ArrowLeft") prev();
-        if (e.key === " " || e.key === "Enter") {
-            e.preventDefault(); 
-            toggleAnswer();
-        }
+  if (document.getElementById("lightbox").style.display === "flex") {
+    if (e.key === "Escape") document.getElementById("lightbox").style.display = "none";
+    return;
+  }
+  if (!document.getElementById("quizView").classList.contains("hidden")) {
+    if (e.key === "ArrowRight" || e.key === "d") next();
+    if (e.key === "ArrowLeft" || e.key === "a") prev();
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault(); 
+      toggleAnswer();
     }
+  }
 });
 
-// Chạy luôn nếu trình duyệt tải kịp script
 window.onload = initHome;
 </script>
 
