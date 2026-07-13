@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Ôn tập trắc nghiệm</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f0f2f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    #homeView {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .exam-btn {
+        width: 80%;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .exam-btn:hover { background-color: #0056b3; }
+
+    .header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #d9534f;
+    }
+
+    .nav-top { margin-bottom: 15px; }
+
+    .nav-top button, .mode button {
+        padding: 10px 15px;
+        margin: 5px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        background: #f8f9fa;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: 0.2s;
+    }
+
+    .nav-top button:hover, .mode button:hover { background: #e2e6ea; }
+
+    .btn-answer {
+        background-color: #28a745 !important;
+        color: white;
+        font-weight: bold;
+        border: none !important;
+    }
+
+    .btn-answer:hover { background-color: #218838 !important; }
+
+    .btn-home {
+        background-color: #6c757d !important;
+        color: white;
+        border: none !important;
+    }
+
+    img {
+        max-width: 100%;
+        max-height: 70vh;
+        margin: 15px 0;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .hidden { display: none !important; }
+    #loadingMsg { color: #007bff; font-weight: bold; margin-top: 20px; font-size: 18px; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="homeView">
+        <h1>📚 Chọn folder đề</h1>
+        <div id="examList"></div>
+        <div id="loadingMsg" class="hidden">⏳ Đang quét số lượng câu hỏi... Vui lòng đợi!</div>
+    </div>
+
+    <div id="quizView" class="hidden">
+        <div class="nav-top">
+            <button class="btn-home" onclick="goHome()">🏠 Quay lại</button>
+            <button onclick="prev()">⬅ Trước</button>
+            <button onclick="next()">Tiếp ➡</button>
+        </div>
+
+        <div class="header" id="info">Đang tải dữ liệu...</div>
+
+        <img id="questionImg" src="" class="hidden">
+        <img id="answerImg" src="" class="hidden">
+
+        <div>
+            <button class="btn-answer" onclick="toggleAnswer()">Hiện/Ẩn đáp án (Space/Enter)</button>
+        </div>
+
+        <div class="mode">
+            <button onclick="startFull()">Ôn toàn bộ</button>
+            <button onclick="startRandom()">Random 50 câu</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="data.js"></script>
+
+<script>
+let currentExam = null;
+let questions = [];
+let index = 0;
+let totalQuestions = 0; 
+
+function initHome() {
+    const listDiv = document.getElementById("examList");
+    listDiv.innerHTML = "";
+    
+    // Nếu chưa có file data.js hoặc mảng bị lỗi
+    if (typeof EXAM_LIST === 'undefined' || EXAM_LIST.length === 0) {
+        listDiv.innerHTML = "<p style='color:red;'>Chưa tìm thấy đề nào! Bạn đã chạy file <b>quet_de.py</b> chưa?</p>";
+        return;
+    }
+
+    EXAM_LIST.forEach(exam => {
+        let btn = document.createElement("button");
+        btn.className = "exam-btn";
+        btn.innerText = exam.name;
+        btn.onclick = () => selectExam(exam);
+        listDiv.appendChild(btn);
+    });
+}
+
+function goHome() {
+    document.getElementById("quizView").classList.add("hidden");
+    document.getElementById("homeView").classList.remove("hidden");
+    currentExam = null;
+    questions = [];
+}
+
+async function selectExam(exam) {
+    currentExam = exam;
+    
+    document.getElementById("examList").classList.add("hidden");
+    document.getElementById("loadingMsg").classList.remove("hidden");
+
+    totalQuestions = await autoDetectQuestionCount(exam.folderDe);
+
+    document.getElementById("loadingMsg").classList.add("hidden");
+    document.getElementById("examList").classList.remove("hidden");
+    
+    document.getElementById("homeView").classList.add("hidden");
+    document.getElementById("quizView").classList.remove("hidden");
+
+    startFull(); 
+}
+
+async function autoDetectQuestionCount(folderDe) {
+    let count = 0;
+    let found = true;
+
+    while (found) {
+        let nextIndex = count + 1;
+        let url = `${folderDe}/${nextIndex}.jpg`;
+        
+        let exists = await checkImageExists(url);
+        if (exists) {
+            count++;
+        } else {
+            found = false; 
+        }
+    }
+    return count;
+}
+
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        let img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function startFull() {
+    if (totalQuestions === 0) {
+        alert(`Không tìm thấy ảnh nào trong folder "${currentExam.folderDe}"!`);
+        return;
+    }
+    questions = [];
+    for (let i = 1; i <= totalQuestions; i++) {
+        questions.push(i);
+    }
+    index = 0;
+    loadQuestion();
+}
+
+function startRandom() {
+    if (totalQuestions === 0) return;
+    questions = [];
+    for (let i = 1; i <= totalQuestions; i++) {
+        questions.push(i);
+    }
+    shuffle(questions);
+    questions = questions.slice(0, Math.min(50, totalQuestions));
+    index = 0;
+    loadQuestion();
+}
+
+function loadQuestion() {
+    if (questions.length === 0 || !currentExam) return;
+    
+    let q = questions[index];
+    let qImg = document.getElementById("questionImg");
+    let aImg = document.getElementById("answerImg");
+
+    qImg.src = `${currentExam.folderDe}/${q}.jpg`;
+    aImg.src = `${currentExam.folderDapan}/dapan${q}.jpg`;
+
+    qImg.classList.remove("hidden");
+    aImg.classList.add("hidden");
+
+    document.getElementById("info").innerText = 
+        `Câu ${index + 1} / ${questions.length}  |  Câu gốc: ${q}`;
+}
+
+function next() {
+    if (index < questions.length - 1) {
+        index++;
+        loadQuestion();
+    }
+}
+
+function prev() {
+    if (index > 0) {
+        index--;
+        loadQuestion();
+    }
+}
+
+function toggleAnswer() {
+    let aImg = document.getElementById("answerImg");
+    aImg.classList.toggle("hidden");
+}
+
+document.addEventListener("keydown", function(e) {
+    if (!document.getElementById("quizView").classList.contains("hidden")) {
+        if (e.key === "ArrowRight") next();
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === " " || e.key === "Enter") {
+            e.preventDefault(); 
+            toggleAnswer();
+        }
+    }
+});
+
+// Chạy luôn nếu trình duyệt tải kịp script
+window.onload = initHome;
+</script>
+
+</body>
+</html>
