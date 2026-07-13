@@ -70,6 +70,23 @@ const EXAM_LIST = [
             "folderDe": "de_fin303_5",
             "folderDapan": "dapan_fin303_5",
             "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_fa25_1",
+            "folderDe": "de_mas202_fa25_1",
+            "folderDapan": "dapan_mas202_fa25_1",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_sp26",
+            "folderDe": "de_mas202_sp26",
+            "folderDapan": "dapan_mas202_sp26",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_sp26_1",
+            "folderDe": "de_mas202_sp26_1",
+            "folderDapan": "dapan_mas202_sp26_1",
+            "folderLoigiai": null
         }
-        
 ];
