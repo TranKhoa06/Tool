@@ -830,7 +830,6 @@ function renderExamGrid() {
 
 function selectExam(exam) {
   currentExam = exam;
-  // Count images in folderDe
   countImages(exam, () => {
     showView('modeView');
     document.getElementById('modeTitle').textContent = 'Bộ Đề: ' + exam.name;
@@ -839,30 +838,43 @@ function selectExam(exam) {
   });
 }
 
-function countImages(exam, cb) {
-  // Build card list by probing images
-  currentCards = [];
-  let i = 1;
-  function probe() {
-    const img = new Image();
-    img.onload = () => {
+async function countImages(exam, cb) {
+  document.getElementById('modeTitle').textContent = '⏳ Đang quét đề thi...';
+  showView('modeView');
+
+  let low = 1, high = 300, maxFound = 0;
+  
+  async function checkExists(i) {
+    try {
+      const res = await fetch(`${exam.folderDe}/${i}.jpg`, { method: 'HEAD' });
+      return res.ok;
+    } catch(e) { return false; }
+  }
+
+  while (low <= high) {
+    let mid = Math.floor((low + high) / 2);
+    if (await checkExists(mid)) {
+      maxFound = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  if (maxFound === 0) {
+    showToast('⚠️ Không tìm thấy ảnh trong ' + exam.folderDe, 'error');
+    showView('appPage');
+  } else {
+    currentCards = [];
+    for(let i = 1; i <= maxFound; i++) {
       currentCards.push({
         de:     `${exam.folderDe}/${i}.jpg`,
         dapan:  `${exam.folderDapan}/dapan${i}.jpg`,
         index:  i
       });
-      i++;
-      probe();
-    };
-    img.onerror = () => {
-      if (i === 1) {
-        showToast('⚠️ Không tìm thấy ảnh trong ' + exam.folderDe, 'error');
-      }
-      cb();
-    };
-    img.src = `${exam.folderDe}/${i}.jpg?t=${Date.now()}`;
+    }
+    cb();
   }
-  probe();
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
