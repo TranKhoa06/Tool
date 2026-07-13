@@ -902,7 +902,7 @@ async function countImages(exam, cb) {
   document.getElementById('modeTitle').textContent = '⏳ Đang quét đề thi...';
   showView('modeView');
 
-  let low = 1, high = 300, maxFound = 0;
+  let minFail = 300, maxFound = 0;
   
   const isLocal = location.protocol === 'file:';
   
@@ -922,13 +922,31 @@ async function countImages(exam, cb) {
     }
   }
 
-  while (low <= high) {
-    let mid = Math.floor((low + high) / 2);
-    if (await checkExists(mid)) {
-      maxFound = mid;
-      low = mid + 1;
-    } else {
-      high = mid - 1;
+  while (maxFound + 1 < minFail) {
+    let gap = minFail - maxFound;
+    let numProbes = Math.min(5, gap - 1);
+    if (numProbes <= 0) break;
+
+    let step = gap / (numProbes + 1);
+    let promises = [];
+    let probePoints = [];
+    
+    for (let i = 1; i <= numProbes; i++) {
+      let pt = Math.floor(maxFound + step * i);
+      if (!probePoints.includes(pt)) {
+        probePoints.push(pt);
+        promises.push(checkExists(pt));
+      }
+    }
+    
+    let results = await Promise.all(promises);
+    
+    for (let i = 0; i < probePoints.length; i++) {
+      if (results[i]) {
+        if (probePoints[i] > maxFound) maxFound = probePoints[i];
+      } else {
+        if (probePoints[i] < minFail) minFail = probePoints[i];
+      }
     }
   }
 
