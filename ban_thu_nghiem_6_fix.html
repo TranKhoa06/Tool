@@ -182,7 +182,10 @@ body::before {
 }
 
 /* ── 3D FLIP CARD ── */
-.flip-container { perspective: 1200px; height: 400px; cursor: pointer; }
+.flip-container {
+  perspective: 1200px; width: 100%; height: 65vh; max-height: 800px;
+  margin: 0 auto; position: relative;
+}
 .flip-card {
   width: 100%; height: 100%;
   transform-style: preserve-3d;
@@ -207,7 +210,7 @@ body::before {
   box-shadow: 0 0 40px rgba(176,38,255,.1), inset 0 0 60px rgba(0,0,0,.3);
   transform: rotateY(180deg);
 }
-.flip-face img { max-width: 95%; max-height: 85%; object-fit: contain; border-radius: 8px; }
+.flip-face img { max-width: 95%; max-height: 85%; object-fit: contain; border-radius: 8px; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; }
 .flip-label {
   position: absolute; bottom: 14px; right: 18px;
   font-family: 'Orbitron', sans-serif; font-size: .6rem;
@@ -225,7 +228,7 @@ body::before {
 /* ── QUIZ VIEW ── */
 #quizView { padding: 1.5rem; max-width: 860px; margin: 0 auto; width: 100%; }
 .quiz-img-wrap { border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,243,255,.2); position: relative; }
-.quiz-img-wrap img { width: 100%; display: block; max-height: 380px; object-fit: contain; background: #030d17; }
+.quiz-img-wrap img { width: 100%; display: block; max-height: 60vh; object-fit: contain; background: #030d17; cursor: zoom-in; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; }
 
 .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.25rem; }
 .ans-btn {
@@ -333,7 +336,18 @@ body::before {
 @media (max-width: 600px) {
   .answer-grid { grid-template-columns: 1fr; }
   .result-grid  { grid-template-columns: 1fr; }
-  .flip-container { height: 300px; }
+  .flip-container { height: 400px; }
+}
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 99999;
+  background: rgba(0,0,0,0.95); backdrop-filter: blur(5px);
+  align-items: center; justify-content: center; cursor: zoom-out;
+}
+#lightbox img {
+  max-width: 98vw; max-height: 98vh; object-fit: contain;
+  image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;
 }
 </style>
 </head>
@@ -388,6 +402,11 @@ body::before {
   <h2 class="orbitron text-xl font-black" style="color:var(--r)">PHIÊN BỊ NGẮT KẾT NỐI</h2>
   <p class="text-sm opacity-60" style="max-width:320px;line-height:1.6">Tài khoản này vừa được đăng nhập từ một thiết bị khác.<br>Bạn đã bị đăng xuất tự động.</p>
   <button onclick="location.reload()" class="btn btn-c btn-lg" style="margin-top:.5rem;">🔄 ĐĂNG NHẬP LẠI</button>
+</div>
+
+<!-- ═══ LIGHTBOX ═══ -->
+<div id="lightbox" onclick="this.style.display='none'">
+  <img id="lightboxImg" src="">
 </div>
 
 <!-- ═══ APP ═══ -->
@@ -450,6 +469,47 @@ body::before {
         <span class="badge badge-p">Review Mode</span>
       </div>
     </div>
+
+    <div class="mode-card" style="border-color: rgba(0,255,136,.3);" onclick="startClassic()">
+      <div class="mode-icon" style="color: var(--g);">📖</div>
+      <h3 class="orbitron text-lg font-bold neon-g mb-2">CLASSIC MODE</h3>
+      <p class="text-sm opacity-60 leading-relaxed">Học cơ bản (Cuộn dọc). Hiển thị câu hỏi, lật mở đáp án bằng phím Space hoặc Enter. Phù hợp để xem nhanh.</p>
+      <div class="mt-3 flex gap-2 flex-wrap">
+        <span class="badge badge-g">Scroll View</span>
+        <span class="badge badge-g">Shortcuts</span>
+        <span class="badge badge-g">Fast Load</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CLASSIC VIEW ── -->
+  <div id="classicView" style="display:none;" class="fade-up">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
+      <div>
+        <div class="orbitron text-xs tracking-widest opacity-40 neon-g mb-1">// CLASSIC</div>
+        <h2 class="orbitron text-lg font-black" id="classicTitle">—</h2>
+      </div>
+      <div style="display:flex;gap:.6rem;align-items:center;">
+        <button onclick="toggleClassicRandom()" id="classicRandomBtn" class="btn btn-ghost btn-sm">🔀 RANDOM: OFF</button>
+      </div>
+    </div>
+
+    <div class="quiz-meta">
+      <span class="badge badge-g" id="classicCountBadge">Câu 1/10</span>
+      <button onclick="toggleClassicAnswer()" class="btn btn-p btn-sm ml-auto" style="border-color: var(--p); color: var(--p);">👀 HIỆN/ẨN ĐÁP ÁN (Space)</button>
+    </div>
+
+    <div class="quiz-img-wrap" style="margin-bottom: 1rem;">
+      <img id="classicQImg" src="" alt="Câu hỏi" onclick="openLightbox(this.src)">
+    </div>
+    <div class="quiz-img-wrap" id="classicAWrap" style="display: none; border-color: var(--p);">
+      <img id="classicAImg" src="" alt="Đáp án" onclick="openLightbox(this.src)">
+    </div>
+
+    <div class="flash-controls">
+      <button onclick="prevClassic()" class="btn btn-ghost">← TRƯỚC (Left)</button>
+      <button onclick="nextClassic()" class="btn btn-g">TIẾP → (Right)</button>
+    </div>
   </div>
 
   <!-- ── FLASHCARD VIEW ── -->
@@ -472,7 +532,7 @@ body::before {
       <div class="flip-card" id="flipCard">
         <div class="flip-face flip-front">
           <div class="flip-hint">CLICK ĐỂ XEM ĐÁP ÁN</div>
-          <img id="cardFrontImg" src="" alt="Câu hỏi" onerror="this.style.display='none';document.getElementById('cardFrontFallback').style.display='block'">
+          <img id="cardFrontImg" src="" alt="Câu hỏi" onerror="this.style.display='none';document.getElementById('cardFrontFallback').style.display='block'" onclick="event.stopPropagation(); openLightbox(this.src)">
           <div id="cardFrontFallback" style="display:none;text-align:center;opacity:.4;">
             <div style="font-size:2.5rem;">🖼️</div>
             <p class="mono text-xs mt-2">Không tải được ảnh</p>
@@ -481,7 +541,7 @@ body::before {
         </div>
         <div class="flip-face flip-back">
           <div class="flip-hint" style="opacity:.35">CLICK ĐỂ XEM ĐỀ</div>
-          <img id="cardBackImg" src="" alt="Đáp án" onerror="this.style.display='none';document.getElementById('cardBackFallback').style.display='block'">
+          <img id="cardBackImg" src="" alt="Đáp án" onerror="this.style.display='none';document.getElementById('cardBackFallback').style.display='block'" onclick="event.stopPropagation(); openLightbox(this.src)">
           <div id="cardBackFallback" style="display:none;text-align:center;opacity:.4;">
             <div style="font-size:2.5rem;">🖼️</div>
             <p class="mono text-xs mt-2">Không tải được ảnh</p>
@@ -514,7 +574,7 @@ body::before {
     <div class="progress-bar"><div class="progress-fill" id="quizProgress" style="width:0%;background:linear-gradient(90deg,var(--p),#5e00ff)"></div></div>
 
     <div class="quiz-img-wrap" id="quizImgWrap">
-      <img id="quizImg" src="" alt="Câu hỏi">
+      <img id="quizImg" src="" alt="Câu hỏi" onclick="openLightbox(this.src)">
       <div id="quizImgLoading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(4,12,22,.8);">
         <div class="spinner"></div>
       </div>
@@ -1182,24 +1242,82 @@ try {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 8. NAVIGATION
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const VIEWS = ['selectorView','modeView','flashView','quizView','scoreView'];
+// LIGHTBOX
+function openLightbox(src) {
+  if (!src) return;
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = src;
+  lb.style.display = 'flex';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 8. CLASSIC MODE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let classicIdx = 0;
+function startClassic() {
+  if (!currentCards.length) { showToast('Không có ảnh nào trong bộ đề này!', 'error'); return; }
+  classicIdx = 0;
+  isRandom = false;
+  cardOrder = currentCards.map((_,i) => i);
+  document.getElementById('classicRandomBtn').textContent = '🔀 RANDOM: OFF';
+  showView('classicView');
+  document.getElementById('classicTitle').textContent = currentExam.name;
+  loadClassicCard();
+}
+
+function toggleClassicRandom() {
+  isRandom = !isRandom;
+  document.getElementById('classicRandomBtn').textContent = '🔀 RANDOM: ' + (isRandom ? 'ON' : 'OFF');
+  if (isRandom) cardOrder.sort(() => Math.random() - 0.5);
+  else cardOrder = currentCards.map((_,i) => i);
+  classicIdx = 0;
+  loadClassicCard();
+}
+
+function loadClassicCard() {
+  const c = currentCards[cardOrder[classicIdx]];
+  document.getElementById('classicQImg').src = c.de;
+  document.getElementById('classicAImg').src = c.dapan;
+  document.getElementById('classicAWrap').style.display = 'none';
+  document.getElementById('classicCountBadge').textContent = `Câu ${classicIdx+1} / ${cardOrder.length}  |  Gốc: ${c.index}`;
+}
+
+function nextClassic() {
+  if (classicIdx < cardOrder.length - 1) { classicIdx++; loadClassicCard(); }
+}
+function prevClassic() {
+  if (classicIdx > 0) { classicIdx--; loadClassicCard(); }
+}
+function toggleClassicAnswer() {
+  const ans = document.getElementById('classicAWrap');
+  ans.style.display = ans.style.display === 'none' ? 'block' : 'none';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 9. NAVIGATION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const VIEWS = ['selectorView','modeView','flashView','quizView','scoreView','classicView'];
 
 function showView(id) {
   VIEWS.forEach(v => {
     const el = document.getElementById(v);
-    el.style.display = 'none';
-    el.classList.remove('fade-up');
+    if(el) {
+      el.style.display = 'none';
+      el.classList.remove('fade-up');
+    }
   });
   const el = document.getElementById(id);
-  el.style.display = 'block';
-  void el.offsetWidth;
-  el.classList.add('fade-up');
+  if(el) {
+    el.style.display = 'block';
+    void el.offsetWidth;
+    el.classList.add('fade-up');
+  }
 }
 
 function goBack() {
-  const active = VIEWS.find(v => document.getElementById(v).style.display !== 'none');
+  const active = VIEWS.find(v => document.getElementById(v) && document.getElementById(v).style.display !== 'none');
   if (active === 'modeView')  { goToSelector(); return; }
-  if (active === 'flashView' || active === 'quizView' || active === 'scoreView') {
+  if (active === 'flashView' || active === 'quizView' || active === 'scoreView' || active === 'classicView') {
     showView('modeView'); setBreadcrumb(currentExam?.name || ''); return;
   }
 }
@@ -1216,7 +1334,7 @@ function setBreadcrumb(text) {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 9. TOAST
+// 10. TOAST & SHORTCUTS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let toastTimer;
 function showToast(msg, type='') {
@@ -1230,13 +1348,25 @@ function showToast(msg, type='') {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', e => {
-  const active = VIEWS.find(v => document.getElementById(v).style.display !== 'none');
+  if (document.getElementById('lightbox').style.display === 'flex' && e.key === 'Escape') {
+    document.getElementById('lightbox').style.display = 'none';
+    return;
+  }
+  const active = VIEWS.find(v => document.getElementById(v) && document.getElementById(v).style.display !== 'none');
+  
+  if (active === 'classicView') {
+    if (e.key === 'ArrowRight' || e.key === 'd') nextClassic();
+    if (e.key === 'ArrowLeft'  || e.key === 'a') prevClassic();
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleClassicAnswer(); }
+  }
+  
   if (active === 'flashView') {
     if (e.key === 'ArrowRight' || e.key === 'd') nextCard();
     if (e.key === 'ArrowLeft'  || e.key === 'a') prevCard();
     if (e.key === ' ' || e.key === 'f') { e.preventDefault(); flipCard(); }
     if (e.key === 'k') markKnown();
   }
+  
   if (active === 'quizView' && !quizLocked) {
     const map = { '1':'A','2':'B','3':'C','4':'D','a':'A','b':'B','c':'C','d':'D' };
     if (map[e.key]) {
@@ -1245,6 +1375,7 @@ document.addEventListener('keydown', e => {
       if (btn) btn.click();
     }
   }
+  
   if (active === 'quizView' && quizLocked && (e.key === 'Enter' || e.key === 'ArrowRight')) {
     nextQuiz();
   }
