@@ -782,7 +782,7 @@ async function doLogin() {
 
   } catch(e) {
     setLoginLoading(false);
-    showLoginError('⚠️ Lỗi kết nối. Kiểm tra mạng và thử lại.');
+    showLoginError('⚠️ Lỗi: ' + e.message);
   }
 }
 
