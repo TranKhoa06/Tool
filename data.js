@@ -72,6 +72,30 @@ const EXAM_LIST = [
             "folderLoigiai": null
         },
         {
+            "name": "de_imc301c_fa24_fe",
+            "folderDe": "de_imc301c_fa24_fe",
+            "folderDapan": "dapan_imc301c_fa24_fe",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_imc301c_fa24_re",
+            "folderDe": "de_imc301c_fa24_re",
+            "folderDapan": "dapan_imc301c_fa24_re",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_imc301c_sp25",
+            "folderDe": "de_imc301c_sp25",
+            "folderDapan": "dapan_imc301c_sp25",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_imc301c_sp26",
+            "folderDe": "de_imc301c_sp26",
+            "folderDapan": "dapan_imc301c_sp26",
+            "folderLoigiai": null
+        },
+        {
             "name": "de_mas202_fa25_1",
             "folderDe": "de_mas202_fa25_1",
             "folderDapan": "dapan_mas202_fa25_1",
