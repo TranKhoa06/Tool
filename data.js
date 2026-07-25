@@ -102,6 +102,12 @@ const EXAM_LIST = [
             "folderLoigiai": null
         },
         {
+            "name": "de_mas202_fa25_fe",
+            "folderDe": "de_mas202_fa25_fe",
+            "folderDapan": "dapan_mas202_fa25_fe",
+            "folderLoigiai": null
+        },
+        {
             "name": "de_mas202_sp26",
             "folderDe": "de_mas202_sp26",
             "folderDapan": "dapan_mas202_sp26",
@@ -111,6 +117,18 @@ const EXAM_LIST = [
             "name": "de_mas202_sp26_1",
             "folderDe": "de_mas202_sp26_1",
             "folderDapan": "dapan_mas202_sp26_1",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_su25_fe",
+            "folderDe": "de_mas202_su25_fe",
+            "folderDapan": "dapan_mas202_su25_fe",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_test",
+            "folderDe": "de_test",
+            "folderDapan": "dapan_test",
             "folderLoigiai": null
         }
 ];
