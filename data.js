@@ -155,12 +155,7 @@ const EXAM_LIST = [
             "folderDapan": "dapan_mas202_su25_fe",
             "folderLoigiai": null
         },
-        {
-            "name": "de_mas291_fa25",
-            "folderDe": "de_mas291_fa25",
-            "folderDapan": "dapan_mas291_fa25",
-            "folderLoigiai": null
-        },
+
         {
             "name": "de_MCP201",
             "folderDe": "de_MCP201",
