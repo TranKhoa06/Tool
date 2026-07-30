@@ -24,6 +24,18 @@ const EXAM_LIST = [
             "folderLoigiai": null
         },
         {
+            "name": "de_de_DIC201_250",
+            "folderDe": "de_de_DIC201_250",
+            "folderDapan": "dapan_de_DIC201_250",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_DIC201_250_448",
+            "folderDe": "de_DIC201_250_448",
+            "folderDapan": "dapan_DIC201_250_448",
+            "folderLoigiai": null
+        },
+        {
             "name": "de_fin201_FA24",
             "folderDe": "de_fin201_FA24",
             "folderDapan": "dapan_fin201_FA24",
@@ -96,6 +108,12 @@ const EXAM_LIST = [
             "folderLoigiai": null
         },
         {
+            "name": "de_mas202_fa24",
+            "folderDe": "de_mas202_fa24",
+            "folderDapan": "dapan_mas202_fa24",
+            "folderLoigiai": null
+        },
+        {
             "name": "de_mas202_fa25_1",
             "folderDe": "de_mas202_fa25_1",
             "folderDapan": "dapan_mas202_fa25_1",
@@ -105,6 +123,18 @@ const EXAM_LIST = [
             "name": "de_mas202_fa25_fe",
             "folderDe": "de_mas202_fa25_fe",
             "folderDapan": "dapan_mas202_fa25_fe",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_sp25",
+            "folderDe": "de_mas202_sp25",
+            "folderDapan": "dapan_mas202_sp25",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas202_sp25_fe",
+            "folderDe": "de_mas202_sp25_fe",
+            "folderDapan": "dapan_mas202_sp25_fe",
             "folderLoigiai": null
         },
         {
@@ -123,6 +153,18 @@ const EXAM_LIST = [
             "name": "de_mas202_su25_fe",
             "folderDe": "de_mas202_su25_fe",
             "folderDapan": "dapan_mas202_su25_fe",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mas291_fa25",
+            "folderDe": "de_mas291_fa25",
+            "folderDapan": "dapan_mas291_fa25",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_MCP201",
+            "folderDe": "de_MCP201",
+            "folderDapan": "dapan_MCP201",
             "folderLoigiai": null
         },
         {
