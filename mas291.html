@@ -148,7 +148,7 @@
 
 <div class="container">
     <div id="homeView">
-        <h1>📚 Chọn đề MAS để ôn tập</h1>
+        <h1>📚 Chọn đề MAS291 để ôn tập</h1>
         <p><i>(Giao diện dành riêng cho ảnh đề to, nét)</i></p>
         <div id="examList"></div>
     </div>
@@ -156,7 +156,7 @@
     <div id="loadingMsg" class="hidden">⏳ Đang tải đề... Vui lòng đợi!</div>
 
     <div id="quizView" class="hidden">
-        <h1 id="examTitle">📚 Ôn Tập MAS</h1>
+        <h1 id="examTitle">📚 Ôn Tập MAS291</h1>
         
         <div class="nav-top">
             <button class="btn-home" onclick="goHome()">🏠 Đổi đề khác</button>
@@ -199,11 +199,11 @@ function initHome() {
         return;
     }
 
-    // Lọc ra các đề có chữ "mas"
-    const masExams = EXAM_LIST.filter(ex => ex.name.toLowerCase().includes('mas'));
+    // Lọc ra các đề có chữ "mas291"
+    const masExams = EXAM_LIST.filter(ex => ex.name.toLowerCase().includes('mas291'));
     
     if (masExams.length === 0) {
-        listDiv.innerHTML = "<p style='color:red;'>Không tìm thấy đề MAS nào!</p>";
+        listDiv.innerHTML = "<p style='color:red;'>Không tìm thấy đề MAS291 nào!</p>";
         return;
     }
 
