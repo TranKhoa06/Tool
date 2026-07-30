@@ -108,6 +108,18 @@ const EXAM_LIST = [
             "folderLoigiai": null
         },
         {
+            "name": "de_mae101_sp26",
+            "folderDe": "de_mae101_sp26",
+            "folderDapan": "dapan_mae101_sp26",
+            "folderLoigiai": null
+        },
+        {
+            "name": "de_mae101_sp26_re",
+            "folderDe": "de_mae101_sp26_re",
+            "folderDapan": "dapan_mae101_sp26_re",
+            "folderLoigiai": null
+        },
+        {
             "name": "de_mas202_fa24",
             "folderDe": "de_mas202_fa24",
             "folderDapan": "dapan_mas202_fa24",
